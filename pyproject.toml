@@ -1,0 +1,15 @@
+[tool.ruff]
+
+line-length = 120
+
+exclude = [".git", "__pycache__", ".github"]
+
+
+builtins = ["spark", "dbutils", "display"]
+
+[tool.ruff.lint]
+
+select = ["E", "F"]
+
+
+ignore = ["E501"]
