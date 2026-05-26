@@ -1,7 +1,7 @@
 from delta.tables import DeltaTable
 from pyspark.sql.dataframe import DataFrame
 
-def upsert_data(df_source: DataFrame, full_table_target_name: str, join_keys_condition: str):
+def upsert_data(df_source: DataFrame, full_table_target_name: str, join_keys_condition: str, name_bucket: str, layer: str):
     """
     Realiza o MERGE. 
     df_source: O próprio DataFrame do PySpark processado.
@@ -15,8 +15,15 @@ def upsert_data(df_source: DataFrame, full_table_target_name: str, join_keys_con
 
     if not table_exist:
         print(f" Table {full_table_target_name} DOES NOT exist. Initializing full load")
-        df_source.write.format("delta").mode("overwrite").saveAsTable(full_table_target_name)
-        print(" Full load complete.")
+        print("Initializing full load...")
+        
+        writer = df_source.write.format("delta").mode("overwrite")
+        
+        if bucket_name and layer:
+            table_only = full_table_target_name.split(".")[-1]
+            target_path = f"s3://{bucket_name}/{layer}/{table_only}"
+            writer = writer.option("path", target_path)
+            print(f"Salvando no S3: {target_path}")
 
     else:
         print(f"Table {full_table_target_name} exists. Initializing merge")
