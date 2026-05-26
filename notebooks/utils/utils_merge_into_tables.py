@@ -16,12 +16,12 @@ def upsert_data(df_source: DataFrame, full_table_target_name: str, join_keys_con
     if not table_exist:
         print(f" Table {full_table_target_name} DOES NOT exist. Initializing full load")
         print("Initializing full load...")
-        
+
         writer = df_source.write.format("delta").mode("overwrite")
         
-        if bucket_name and layer:
+        if name_bucket and layer:
             table_only = full_table_target_name.split(".")[-1]
-            target_path = f"s3://{bucket_name}/{layer}/{table_only}"
+            target_path = f"s3://{name_bucket}/{layer}/{table_only}"
             writer = writer.option("path", target_path)
             print(f"Salvando no S3: {target_path}")
 
