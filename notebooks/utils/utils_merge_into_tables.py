@@ -23,7 +23,7 @@ def upsert_data(df_source: DataFrame, full_table_target_name: str, join_keys_con
             table_only = full_table_target_name.split(".")[-1]
             target_path = f"s3://{name_bucket}/{layer}/{table_only}"
             writer = writer.option("path", target_path)
-            print(f"Salvando no S3")
+            print("Salvando no S3")
             
         writer.saveAsTable(full_table_target_name)
 
